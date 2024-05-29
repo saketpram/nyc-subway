@@ -1,5 +1,5 @@
 # nyc-subway
-2024 Spring ENGR 1050 Final Project
+A Systemwide Assessment of Wait Times for the New York City Subway (2024 ENGR 1050 Final Project)
 
 # How to Run: 
 *Option 1*
