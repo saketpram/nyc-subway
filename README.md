@@ -60,14 +60,111 @@ Another simplification made was that the time between trains at a station is an 
 
 One exclusion from this project was the shuttle lines, as they contained so few stops that any information that could be gleaned from them was extremely minimal. The Staten Island Railway was also ignored as it functionally serves more as suburban rail compared to rapid transit.
 
-# Observations
-Based on the visualizations of train trips during morning and evening rush hour, we determined that 
+# Results and Observations
+The following maps were generated for each line, showing the individual paths of trains that ran during AM and PM rush hours in both directions.
+![7Av_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/907fa60d-0ade-4967-b757-2dfb90d1404d)
+![LexAv_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/cd66e0c3-7de5-4c94-a3dc-dd9f5ad2b7e0)
+![Flushing_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/d870ca4f-92e9-438d-9473-c24a1ad39e74)
+![8Av_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/d9f25c9f-9543-4554-a15c-2da11beb9e2a)
+![6Av_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/d6d2bfcb-f2b8-41a7-bdf2-0f4331cf3f78)
+![Crosstown_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/cfb6f7c5-0fb9-444d-92a0-4524f638ccca)
+![Canarsie_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/86288391-1a98-4b31-bd85-2ad1141bd845)
+![Nassau_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/5260b145-1bf0-4993-aa06-108154461d22)
+![Broadway_RealtimeData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/657a45bd-2261-4073-a033-8938d1c11d14)
+
+The below histograms show the distribution of times between trains for specific lines (data combines all the stations that line serves).
+![IRTIntervalData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/43b2800e-36d5-4d45-8ba0-9fd6d97fef17)
+![INDBMTIntervalData_0219](https://github.com/saketpram/nyc-subway/assets/171081824/4d903372-c787-4841-a2af-8a2a72dd0bb7)
+
+Based on these visualizations, we determined that
 - Several (1) train trips begin at 238 St (so that they can short turn to the yard between 238 St and 241 St) and 137 St. The (4) train is also seen short turning before its terminus at Woodlawn at Burnside Av and bedford Pk Blvd
 - (2) and (5) trains seem to have delays around E 180 St and Rogers Jct (between Franklin Av and President St), both of which are known chokepoints. We know there are delays because the slope for certain trips is much flatter than for other trips.
 - The (N) train sometimes runs local, despite its normal route in Manhattan (can be spotted by the one or two yellow lines crossing every other line instead of running roughly parallel). (W) frequency is very low, but is supplemented by (N) train (considered an alternative of the (N)).
 - The two (F) peak express trains in Brooklyn can be spotted (crossing over other (F) trains) 
 - (M) train frequency has dropped significantly compared to usual as it is not running on Queens Blvd
 
+We also generated the following heatmaps which were generated through pairwise Mann-Whitney U tests for lines.
+![AMNorthbound_Heatmap_0219](https://github.com/saketpram/nyc-subway/assets/171081824/7abb4769-f21c-4d08-98c8-e5b1227734cf)
+![PMNorthbound_Heatmap_0219](https://github.com/saketpram/nyc-subway/assets/171081824/b3a3520d-c63f-4946-af28-b34433850245)
+![AMSouthbound_Heatmap_0219](https://github.com/saketpram/nyc-subway/assets/171081824/88b1a8b6-cb7e-4a1f-8e46-107b16e84c5e)
+![PMSouthbound_Heatmap_0219](https://github.com/saketpram/nyc-subway/assets/171081824/500a4505-6aab-4eb4-8887-9c133360f5df)
+
 In the heatmaps, certain p values were extremely small and thus rounded to 0. When performing a logarithmic scaling, 0 maps to negative infinity, which messes up dataframe filtering and visualization, so all squares that had a p value of 0 before logarithmic scaling were just assigned a black square with no label.
 
+Finally, we created a boxplot to display the distribution of time between trains for all lines, as shown below.
+![Boxplot_0219](https://github.com/saketpram/nyc-subway/assets/171081824/ef57acc8-81d8-4bdf-9b97-060e5165bd5d)
 
+Lines that have their own dedicated track ((7), (6), (L), and (1)) have the best distribution of time between trains (there are less places for delays to have a domino effect; this is one reason that some advocates believe the NYC subway should be deinterlined). The (7) and (L) also have CBTC signaling (a new generation train signaling mechanism) throughout their entire line, along with the (E) and (F) on Queens Blvd. This allows for greater train frequencies, which may also explain why these lines presumably do better compared to others. Trains that are extensively interlined (particularly the (D), (Q), (N), (B), and (C)) tend to have worse time distributions, possibly due to cascading delays from one line to another. The (N) train has a minimum interval time of 0 seconds because presumably a local (N) and express (N) arrived at the same station at the same time (this can be seen on the (N) train path line graph).
+
+The table below shows the Shapiro-Wilk Test p values for each distribution (given time of day and direction). Based on the normality of these distributions, we used the Mann-Whitney U test (if p is less than 0.05) or a two sample t-test (if p is greater than 0.05).
+| Line | Morning Rush Hour (Northbound) | Evening Rush Hour (Northbound) | Morning Rush Hour (Southbound) | Evening Rush Hour (Southbound) |
+|------|-------------------------------:|-------------------------------:|-------------------------------:|-------------------------------:|
+| 1    | 6.57E-17                       | 1.74E-33                       | 5.30E-30                       | 6.28E-39                       |
+| 2    | 5.47E-15                       | 6.04E-18                       | 1.39E-19                       | 1.43E-32                       |
+| 3    | 7.18E-20                       | 9.42E-18                       | 4.61E-25                       | 5.45E-22                       |
+| 4    | 2.80E-15                       | 8.25E-18                       | 3.24E-20                       | 5.68E-15                       |
+| 5    | 1.50E-12                       | 1.07E-10                       | 1.56E-21                       | 3.56E-10                       |
+| 6    | 1.32E-34                       | 0                              | 1.60E-36                       | 0                              |
+| 7    | 1.65E-41                       | 1.19E-36                       | 2.06E-40                       | 2.88E-36                       |
+| A    | 8.48E-30                       | 7.57E-34                       | 1.63E-25                       | 4.63E-34                       |
+| C    | 1.18E-12                       | 2.21E-19                       | 4.87E-13                       | 5.50E-10                       |
+| E    | 9.02E-25                       | 2.32E-14                       | 2.83E-18                       | 2.35E-23                       |
+| B    | 1.42E-16                       | 7.74E-23                       | 9.15E-28                       | 1.51E-25                       |
+| D    | 3.31E-22                       | 8.55E-22                       | 5.69E-15                       | 7.19E-16                       |
+| F    | 3.99E-19                       | 6.22E-29                       | 3.69E-33                       | 4.66E-34                       |
+| M    | 8.17E-15                       | 3.61E-18                       | 5.42E-07                       | 1.24E-08                       |
+| G    | 3.41E-12                       | 2.18E-18                       | 1.66E-22                       | 3.17E-17                       |
+| L    | 2.54E-30                       | 3.78E-44                       | 2.08E-26                       | 4.06E-42                       |
+| J    | 1.50E-20                       | 2.36E-20                       | 6.46E-14                       | 2.51E-26                       |
+| N    | 9.95E-09                       | 1.69E-12                       | 2.23E-17                       | 7.51E-09                       |
+| Q    | 7.01E-14                       | 2.95E-13                       | 1.31E-14                       | 2.06E-14                       |
+| R    | 2.67E-09                       | 3.90E-22                       | 2.42E-32                       | 3.42E-19                       |
+| W    | 7.63E-16                       | 7.24E-11                       | 5.08E-23                       | 7.67E-11                       |
+
+Based on the Shapiro-Wilk p values, we assume that it is False that all all the train interval distributions are normally distributed for all lines going northbound in morning rush hour.
+
+Based on the Shapiro-Wilk p values, we assume that it is False that all all the train interval distributions are normally distributed for all lines going northbound in evening rush hour.
+
+Based on the Shapiro-Wilk p values, we assume that it is False that all all the train interval distributions are normally distributed for all lines going southbound in morning rush hour.
+
+Based on the Shapiro-Wilk p values, we assume that it is False that all all the train interval distributions are normally distributed for all lines going southbound in evening rush hour.
+
+The ANOVA Test p value for all lines for morning rush hour and northbound, morning rush hour and southbound, evening rush hour and northbound, and evening rush hour and southbound is 0.0, 0.0, 0.0, and 0.0. We can conclude there is at least one pair of distributions in which the mean difference is statistically different.
+
+The table below shows the mean wait time between trains in minutes for each line.
+
+| Line | Mean Wait Time Between Trains (Min) |
+|------|-------------------------------------|
+| 7    | 2.91                                |
+| L    | 4.06                                |
+| 6    | 4.38                                |
+| 1    | 4.61                                |
+| E    | 5.12                                |
+| F    | 5.52                                |
+| 4    | 5.64                                |
+| 2    | 6.86                                |
+| A    | 6.90                                |
+| R    | 7.02                                |
+| 5    | 7.06                                |
+| Q    | 7.21                                |
+| 3    | 7.33                                |
+| G    | 7.89                                |
+| N    | 7.98                                |
+| J    | 8.07                                |
+| D    | 8.13                                |
+| B    | 8.80                                |
+| C    | 9.50                                |
+| M    | 10.00                               |
+| W    | 10.07                               |
+
+One major issue we encountered throughout this project was with the dataset itself. Oftentimes, the dataset was organized intuitively. Stop IDs for a line were not ordered properly, for instance. Some numbers are skipped for no reason (for instance, L09 is not a stop on the L train). Furthermore, because some trains share certain stops, they only go by one stop ID (for instance, G01 is Jamaica Center-Parsons/Archer, which is where the E, J, and Z trains stop). We had to manually go in and create the train paths for each train in cases where the stop IDs did not necessarily correspond to the line of the train.
+
+The IDs for each train also did not make sense at times. One example of this was that all the Queens Blvd Lines have a train ID of the form L0S1… to represent a weekday train while the other train lines have the word “Weekday” explicitly written in the ID. Furthermore, the N and W trains were combined (as internally, they are considered the same, although we wanted to highlight their distinction), so we had to figure out which trips corresponded to the N and which to the W. These minor issues made data validation and filtering somewhat difficult.
+
+Initially, we wanted to focus on waiting time, but because this was not very easy to calculate, we ended up switching over to train time intervals at stations.
+
+We also noticed that when we first created our heatmaps, it was very hard to pick out differences because the p values were so small, so we made the decision to logarithmically scale them. Adding images to the plots was difficult as well: we learned that OpenCV uses BGR, while Matplotlib uses RGB, so we had to convert between the two systems.
+
+We initially also planned to do machine learning, exploring the effect of weather on subway ridership at stations, but we decided to leave this for another time as the current project took up a lot more time than expected.
+
+In the future, we hope to do the same data analysis for a larger period of time; we only collected data for one day, but collecting data across a period of time, say three months, could provide even more accurate insights into train interval times, average waiting time, and the average path of a trip of a given train. It could also provide more insight into where delays tend to occur, and these locations can be highlighted. We also want to take into account the number of individuals that use a certain station or line and take a weighted average rather than naively treating all stations equally, as average waiting time is certainly affected by the number of passengers at one station versus another.
